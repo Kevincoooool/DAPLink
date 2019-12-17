@@ -84,7 +84,16 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 #endif
 
 // TDI Pin - Not used
+#ifndef PIN_TDI
+#define PIN_TDI_PORT          PIOA
+#define PIN_TDI_BIT           13
+#define PIN_TDI               (1UL << PIN_TDI_BIT)
+#endif
 
 // SWO/TDO Pin - Not used
-
+#ifndef PIN_TDO
+#define PIN_TDO_PORT          PIOA
+#define PIN_TDO_BIT           21
+#define PIN_TDO               (1UL << PIN_TDO_BIT)
+#endif
 #endif

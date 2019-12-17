@@ -349,6 +349,10 @@ __STATIC_FORCEINLINE uint32_t PIN_nRESET_IN(void)
 __STATIC_FORCEINLINE void     PIN_nRESET_OUT(uint32_t bit)
 {
     DBG_RST_IO = bit;
+	swd_init_debug();
+	// 0x05FA0000 = VECTKEY, 0x4 = SYSRESETREQ
+	uint32_t swd_mem_write_data = 0x05FA0000 | 0x4;
+	swd_write_memory(0xE000ED0C, (uint8_t *) &swd_mem_write_data, 4);
 }
 
 //**************************************************************************************************

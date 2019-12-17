@@ -1,6 +1,6 @@
 common:
     target:
-        - m485sidae
+        - stm32f103xb
     core:
         - Cortex-M4F
     macros:

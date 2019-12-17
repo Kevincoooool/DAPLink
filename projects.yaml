@@ -630,6 +630,10 @@ projects:
         - *module_bl
         - records/hic_hal/m48ssidae.yaml
         - records/board/m48ssidae_bl.yaml
+    m48ssidae_if:
+        - *module_if
+        - *module_hic_m48ssidae
+        - records/hic_hal/m48ssidae.yaml
     m48ssidae_numaker_m252kg_if:
         - *module_if
         - *module_hic_m48ssidae

@@ -109,6 +109,7 @@ uint8_t gpio_get_reset_btn_no_fwrd(void)
 uint8_t gpio_get_reset_btn_fwrd()
 {
     return (PIN_RESET_IN_FWRD_PORT->PIO_PDSR & PIN_RESET_IN_FWRD) == 0;
+//	return 0;
 }
 
 void gpio_set_board_power(bool powerEnabled)

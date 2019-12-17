@@ -54,11 +54,11 @@ Provides definitions about:
 
 /// Indicate that JTAG communication mode is available at the Debug Port.
 /// This information is returned by the command \ref DAP_Info as part of <b>Capabilities</b>.
-#define DAP_JTAG                0               ///< JTAG Mode: 1 = available, 0 = not available.
+#define DAP_JTAG                1               ///< JTAG Mode: 1 = available, 0 = not available.
 
 /// Configure maximum number of JTAG devices on the scan chain connected to the Debug Access Port.
 /// This setting impacts the RAM requirements of the Debug Unit. Valid range is 1 .. 255.
-#define DAP_JTAG_DEV_CNT        0               ///< Maximum number of JTAG devices on scan chain
+#define DAP_JTAG_DEV_CNT        1               ///< Maximum number of JTAG devices on scan chain
 
 /// Default communication mode on the Debug Access Port.
 /// Used for the command \ref DAP_Connect when Port Default mode is selected.
@@ -67,7 +67,7 @@ Provides definitions about:
 /// Default communication speed on the Debug Access Port for SWD and JTAG mode.
 /// Used to initialize the default SWD/JTAG clock frequency.
 /// The command \ref DAP_SWJ_Clock can be used to overwrite this default setting.
-#define DAP_DEFAULT_SWJ_CLOCK   2000000         ///< Default SWD/JTAG clock frequency in Hz.
+#define DAP_DEFAULT_SWJ_CLOCK   10000000         ///< Default SWD/JTAG clock frequency in Hz.
 
 /// Maximum Package Size for Command and Response data.
 /// This configuration settings is used to optimized the communication performance with the
@@ -307,7 +307,8 @@ __STATIC_FORCEINLINE void     PIN_SWDIO_OUT_DISABLE(void)
 */
 __STATIC_FORCEINLINE uint32_t PIN_TDI_IN(void)
 {
-    return (0);   // Not available
+	return ((PIN_TDI_PORT->PIO_PDSR >> PIN_TDI_BIT) & 1);
+   // return (0);   // Not available
 }
 
 /** TDI I/O pin: Set Output.
@@ -315,7 +316,12 @@ __STATIC_FORCEINLINE uint32_t PIN_TDI_IN(void)
 */
 __STATIC_FORCEINLINE void     PIN_TDI_OUT(uint32_t bit)
 {
-    ;             // Not available
+    if (bit & 1) {
+        PIN_TDI_PORT->PIO_SODR = PIN_TDI;
+
+    } else {
+        PIN_TDI_PORT->PIO_CODR = PIN_TDI;
+    }
 }
 
 
@@ -326,7 +332,7 @@ __STATIC_FORCEINLINE void     PIN_TDI_OUT(uint32_t bit)
 */
 __STATIC_FORCEINLINE uint32_t PIN_TDO_IN(void)
 {
-    return (0);   // Not available
+    return ((PIN_TDO_PORT->PIO_PDSR >> PIN_TDO_BIT) & 1);
 }
 
 
@@ -408,6 +414,11 @@ __STATIC_FORCEINLINE void     PIN_nRESET_OUT(uint32_t bit)
 
     } else {
         PIN_nRESET_PORT->PIO_CODR = PIN_nRESET;
+		//Perform a soft reset
+			  swd_init_debug();
+			// 0x05FA0000 = VECTKEY, 0x4 = SYSRESETREQ
+			  uint32_t swd_mem_write_data = 0x05FA0000 | 0x4;
+        swd_write_memory(0xE000ED0C, (uint8_t *) &swd_mem_write_data, 4);
     }
 }
 #endif

@@ -86,7 +86,7 @@
 #define USBD_STRDESC_LANGID         0x0409
 #define USBD_STRDESC_MAN            L"ARM"
 #ifndef USB_PROD_STR
-#define USBD_STRDESC_PROD           L"DAPLink CMSIS-DAP"
+#define USBD_STRDESC_PROD           L"DAPLink CMSIS-DAP KS"
 #else
 #define _TOWIDE(x)                   L ## #x
 #define TOWIDE(x)                   _TOWIDE(x)
@@ -157,7 +157,7 @@
 #define USBD_HID_HS_ENABLE          1
 #define USBD_HID_HS_WMAXPACKETSIZE  64
 #define USBD_HID_HS_BINTERVAL       1
-#define USBD_HID_STRDESC            L"CMSIS-DAP v1"
+#define USBD_HID_STRDESC            L"CMSIS-DAP KS"
 #define USBD_WEBUSB_STRDESC         L"WebUSB: CMSIS-DAP"
 #define USBD_HID_INREPORT_NUM       1
 #define USBD_HID_OUTREPORT_NUM      1

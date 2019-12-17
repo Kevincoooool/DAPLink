@@ -85,7 +85,7 @@
 //   </h>
 #define USBD_STRDESC_LANGID         0x0409
 #define USBD_STRDESC_MAN            L"ARM"
-#define USBD_STRDESC_PROD           L"DAPLink CMSIS-DAP"
+#define USBD_STRDESC_PROD           L"DAPLink CMSIS-DAP KS"
 #define USBD_STRDESC_SER_ENABLE     1
 #define USBD_STRDESC_SER            L"0001A0000000"
 
@@ -155,7 +155,7 @@
 #define USBD_HID_HS_ENABLE          1
 #define USBD_HID_HS_WMAXPACKETSIZE  64
 #define USBD_HID_HS_BINTERVAL       4
-#define USBD_HID_STRDESC            L"CMSIS-DAP v1"
+#define USBD_HID_STRDESC            L"CMSIS-DAP KS"
 #define USBD_WEBUSB_STRDESC         L"WebUSB: CMSIS-DAP"
 #define USBD_HID_INREPORT_NUM       1
 #define USBD_HID_OUTREPORT_NUM      1
