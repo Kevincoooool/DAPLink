@@ -4,6 +4,8 @@
  *
  * DAPLink Interface Firmware
  * Copyright (c) 2009-2019, ARM Limited, All Rights Reserved
+ * Copyright 2019, Cypress Semiconductor Corporation 
+ * or a subsidiary of Cypress Semiconductor Corporation.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -21,7 +23,6 @@
 
 #ifndef TARGET_MCU_CORTEX_A
 #include "cmsis_os2.h"
-#include "target_reset.h"
 #include "target_config.h"
 #include "swd_host.h"
 #include "debug_cm.h"
@@ -688,7 +689,7 @@ static uint8_t swd_wait_until_halted(void)
     return 0;
 }
 
-uint8_t swd_flash_syscall_exec(const program_syscall_t *sysCallParam, uint32_t entry, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4)
+uint8_t swd_flash_syscall_exec(const program_syscall_t *sysCallParam, uint32_t entry, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4, flash_algo_return_t return_type)
 {
     DEBUG_STATE state = {{0}, 0};
     // Call flash algorithm function on target and wait for result.
@@ -719,9 +720,17 @@ uint8_t swd_flash_syscall_exec(const program_syscall_t *sysCallParam, uint32_t e
         return 0;
     }
 
-    // Flash functions return 0 if successful.
-    if (state.r[0] != 0) {
-        return 0;
+    if ( return_type == FLASHALGO_RETURN_POINTER ) {
+        // Flash verify functions return pointer to byte following the buffer if successful.
+        if (state.r[0] != (arg1 + arg2)) {
+            return 0;
+        }
+    }
+    else {
+        // Flash functions return 0 if successful.
+        if (state.r[0] != 0) {
+            return 0;
+        }
     }
 
     return 1;
@@ -768,7 +777,7 @@ static uint8_t swd_read_idcode(uint32_t *id)
 }
 
 
-static uint8_t JTAG2SWD()
+uint8_t JTAG2SWD()
 {
     uint32_t tmp = 0;
 
@@ -882,7 +891,7 @@ uint8_t swd_init_debug(void)
     return 0;
 }
 
-uint8_t swd_set_target_state_hw(TARGET_RESET_STATE state)
+uint8_t swd_set_target_state_hw(target_state_t state)
 {
     uint32_t val;
     int8_t ap_retries = 2;
@@ -1023,7 +1032,7 @@ uint8_t swd_set_target_state_hw(TARGET_RESET_STATE state)
     return 1;
 }
 
-uint8_t swd_set_target_state_sw(TARGET_RESET_STATE state)
+uint8_t swd_set_target_state_sw(target_state_t state)
 {
     uint32_t val;
     int8_t ap_retries = 2;
