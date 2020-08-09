@@ -414,11 +414,9 @@ __STATIC_FORCEINLINE void     PIN_nRESET_OUT(uint32_t bit)
 
     } else {
         PIN_nRESET_PORT->PIO_CODR = PIN_nRESET;
-		//Perform a soft reset
-			  swd_init_debug();
-			// 0x05FA0000 = VECTKEY, 0x4 = SYSRESETREQ
-			  uint32_t swd_mem_write_data = 0x05FA0000 | 0x4;
-        swd_write_memory(0xE000ED0C, (uint8_t *) &swd_mem_write_data, 4);
+		swd_init_debug();
+		uint32_t swd_mem_write_data = 0x05FA0000 | 0x4;
+		swd_write_memory(0xE000ED0C,(uint8_t*)&swd_mem_write_data,4);
     }
 }
 #endif
