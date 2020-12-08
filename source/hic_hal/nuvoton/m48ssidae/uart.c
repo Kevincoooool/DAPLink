@@ -54,12 +54,6 @@ static void clear_buffers(void)
 int32_t uart_initialize(void)
 {
     clear_buffers();
-//	SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC6MFP_Msk       | SYS_GPC_MFPL_PC7MFP_Msk);
-//    SYS->GPC_MFPL |=  (SYS_GPC_MFPL_PC6MFP_UART0_RXD | SYS_GPC_MFPL_PC7MFP_UART0_TXD);
-//	
-//	CLK_EnableModuleClock(UART0_MODULE);
-//	
-//	CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL3_UART0SEL_HXT, CLK_CLKDIV4_UART0(1));
     UART_Open(UART0, 115200);
     UART_ENABLE_INT(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
     NVIC_EnableIRQ(UART0_IRQn);

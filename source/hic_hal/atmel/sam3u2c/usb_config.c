@@ -156,8 +156,8 @@
 #define USBD_HID_BINTERVAL          1
 #define USBD_HID_HS_ENABLE          1
 #define USBD_HID_HS_WMAXPACKETSIZE  64
-#define USBD_HID_HS_BINTERVAL       1
-#define USBD_HID_STRDESC            L"CMSIS-DAP KSDIY V2.0"
+#define USBD_HID_HS_BINTERVAL      0
+#define USBD_HID_STRDESC            L"KSDIY CMSIS-DAP v1"
 #define USBD_WEBUSB_STRDESC         L"WebUSB: CMSIS-DAP"
 #define USBD_HID_INREPORT_NUM       1
 #define USBD_HID_OUTREPORT_NUM      1
@@ -336,8 +336,8 @@
 #define USBD_CDC_ACM_HS_ENABLE1         1
 #define USBD_CDC_ACM_HS_WMAXPACKETSIZE1 512
 #define USBD_CDC_ACM_HS_BINTERVAL1      1
-#define USBD_CDC_ACM_CIF_STRDESC        L"mbed Serial Port"
-#define USBD_CDC_ACM_DIF_STRDESC        L"mbed Serial Port"
+#define USBD_CDC_ACM_CIF_STRDESC        L"KSDIY Serial Port"
+#define USBD_CDC_ACM_DIF_STRDESC        L"KSDIY Serial Port"
 #define USBD_CDC_ACM_SENDBUF_SIZE       USBD_CDC_ACM_HS_WMAXPACKETSIZE1
 #define USBD_CDC_ACM_RECEIVEBUF_SIZE    USBD_CDC_ACM_HS_WMAXPACKETSIZE1
 #if (((USBD_CDC_ACM_HS_ENABLE1) && (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_HS_WMAXPACKETSIZE1)) || (USBD_CDC_ACM_SENDBUF_SIZE    < USBD_CDC_ACM_WMAXPACKETSIZE1))
@@ -383,11 +383,11 @@
 #define BULK_ENDPOINT 1
 #endif
 #define USBD_BULK_ENABLE             BULK_ENDPOINT //no endpts left
-#define USBD_BULK_EP_BULKIN          7
-#define USBD_BULK_EP_BULKOUT         8
+#define USBD_BULK_EP_BULKIN          5
+#define USBD_BULK_EP_BULKOUT         6
 #define USBD_BULK_WMAXPACKETSIZE     64
 #define USBD_BULK_HS_ENABLE          1
-#define USBD_BULK_HS_WMAXPACKETSIZE  512
+#define USBD_BULK_HS_WMAXPACKETSIZE  64
 #define USBD_BULK_STRDESC            L"CMSIS-DAP v2"
 
 
@@ -406,9 +406,9 @@
 #define USBD_EP_NUM_CALC7           MAX((USBD_BULK_ENABLE*(USBD_BULK_EP_BULKIN)), (USBD_BULK_ENABLE*(USBD_BULK_EP_BULKOUT)))
 #define USBD_EP_NUM                 MAX(USBD_EP_NUM_CALC6, USBD_EP_NUM_CALC7)
  
-#if (USBD_EP_NUM > 6)
-#error "SAM3U only have 7 endpoints including EP0!"
-#endif
+//#if (USBD_EP_NUM > 6)
+//#error "SAM3U only have 7 endpoints including EP0!"
+//#endif
 
 #if    (USBD_HID_ENABLE)
 #if    (USBD_MSC_ENABLE)

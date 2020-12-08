@@ -158,6 +158,10 @@ projects:
         - *module_if
         - *module_hic_kl26z
         - records/board/nina_b1.yaml
+    kl26z_artemis_dk_if:
+        - *module_if
+        - *module_hic_kl26z
+        - records/board/artemis_dk.yaml
     k20dx_frdmk20dx_if:
         - *module_if
         - *module_hic_k20dx
@@ -278,6 +282,10 @@ projects:
         - *module_if
         - *module_hic_k20dx
         - records/board/ep_agora.yaml
+    k20dx_ep_kairos_if:
+        - *module_if
+        - *module_hic_k20dx
+        - records/board/ep_kairos.yaml
     k26f_frdmk32w042_if:
         - *module_if
         - *module_hic_k26f
@@ -630,10 +638,6 @@ projects:
         - *module_bl
         - records/hic_hal/m48ssidae.yaml
         - records/board/m48ssidae_bl.yaml
-    m48ssidae_if:
-        - *module_if
-        - *module_hic_m48ssidae
-        - records/hic_hal/m48ssidae.yaml
     m48ssidae_numaker_m252kg_if:
         - *module_if
         - *module_hic_m48ssidae

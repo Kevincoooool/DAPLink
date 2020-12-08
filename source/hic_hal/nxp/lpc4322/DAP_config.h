@@ -517,8 +517,8 @@ __STATIC_INLINE void DAP_SETUP(void)
 
     /* Configure I/O pins: function number, input buffer enabled,    */
     /*                     no pull-up/down                           */
-    scu_pinmux(1, 17, GPIO_NOPULL, FUNC0);   /* SWCLK/TCK: GPIO0[12] */
-    scu_pinmux(1,  6, GPIO_NOPULL, FUNC0);   /* SWDIO/TMS: GPIO1[9]  */
+    scu_pinmux(0, 10, GPIO_NOPULL, FUNC0);   /* SWCLK/TCK: GPIO0[12] */
+    scu_pinmux(0,  8, GPIO_NOPULL, FUNC0);   /* SWDIO/TMS: GPIO1[9]  */
     scu_pinmux(1,  5, GPIO_NOPULL, FUNC0);   /* SWDIO_OE:  GPIO1[8]  */
 }
 

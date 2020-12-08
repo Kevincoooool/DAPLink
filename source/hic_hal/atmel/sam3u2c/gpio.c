@@ -21,6 +21,7 @@
 
 #include "sam3u.h"
 #include "gpio.h"
+#include "pio.h"
 #include "uart.h"
 #include "compiler.h"
 #include "daplink.h"
@@ -34,7 +35,7 @@ void gpio_init(void)
     //
     // Initially enable clock for GPIO and initialize LED ports as output with LED == off
     //
-    PMC->PMC_PCER0 = (1 << 10) | (1 << 11) | (1 << 12);  // Enable clock for all PIOs
+    PMC->PMC_PCER0 =(1 << 10) | (1 << 11) | (1 << 12);  // Enable clock for all PIOs
 
     // DAP LED
     PIN_DAP_LED_PORT->PIO_PER = PIN_DAP_LED;
@@ -57,7 +58,7 @@ void gpio_init(void)
     PIN_RESET_IN_FWRD_PORT->PIO_PUER = PIN_RESET_IN_FWRD; // Enable pull-up
     Cnt = 1000000;
     do {} while (--Cnt);    // Give pull-up some time to become active
-
+	
     // Enable port A interrupts in the NVIC
     NVIC_EnableIRQ(PIOA_IRQn);
 }
@@ -109,7 +110,6 @@ uint8_t gpio_get_reset_btn_no_fwrd(void)
 uint8_t gpio_get_reset_btn_fwrd()
 {
     return (PIN_RESET_IN_FWRD_PORT->PIO_PDSR & PIN_RESET_IN_FWRD) == 0;
-//	return 0;
 }
 
 void gpio_set_board_power(bool powerEnabled)

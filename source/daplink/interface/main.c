@@ -25,7 +25,6 @@
 #include "cmsis_os2.h"
 #include "rl_usb.h"
 #include "main.h"
-
 #include "gpio.h"
 #include "uart.h"
 #include "tasks.h"
@@ -40,7 +39,16 @@
 #include "sdk.h"
 #include "target_family.h"
 #include "target_board.h"
-
+#include "w25qxx.h"
+#include "oled.h"
+#include "ff.h"
+#include "diskio.h"
+#include "button.h"
+#include "bsp_button.h"
+#include "show.h"
+#include "offline.h"
+#include "DAP_config.h"
+#include "my_flash_blob.h"
 #ifdef DRAG_N_DROP_SUPPORT
 #include "vfs_manager.h"
 #include "flash_intf.h"
@@ -100,7 +108,7 @@ static uint8_t msc_led_usb_activity = 0;
 static main_led_state_t hid_led_state = MAIN_LED_FLASH;
 static main_led_state_t cdc_led_state = MAIN_LED_FLASH;
 static main_led_state_t msc_led_state = MAIN_LED_FLASH;
-
+void Work_State(void);
 // Global state of usb
 main_usb_connect_t usb_state;
 static bool usb_test_mode = false;
@@ -113,8 +121,14 @@ void timer_task_30mS(void * arg)
     if (!(i++ % 3)) {
         osThreadFlagsSet(main_task_id, FLAGS_MAIN_90MS);
     }
+	
 }
+// Timer task, set flags every 30mS and 90mS
+void button_task_20mS(void * arg)
+{
 
+	Button_Process();
+}
 // Functions called from other tasks to trigger events in the main task
 // parameter should be reset type??
 void main_reset_target(uint8_t send_unique_id)
@@ -179,11 +193,24 @@ void USBD_SignalHandler()
 }
 
 extern void cdc_process_event(void);
+FIL fnew; /* file objects */
+FILINFO FileInfo;
+DIR DirInfo;
+FATFS fs; /* Work area (file system object) for logical drives */
+FRESULT Res;
+UINT br, bw;		  /* File R/W count */
+BYTE work[FF_MAX_SS]; /* Work area (larger is better for processing time) */
 
+extern uint8_t button_num;
+extern uint8_t dealing_data;
+extern int8_t file_name, name_cnt;
+extern char Name_Buffer[20][20];
+uint8_t button = 0;
 void main_task(void * arg)
 {
     // State processing
     uint16_t flags = 0;
+	uint8_t RES_FS = 0;
     // LED
     gpio_led_state_t hid_led_value = HID_LED_DEF;
     gpio_led_state_t cdc_led_value = CDC_LED_DEF;
@@ -205,6 +232,42 @@ void main_task(void * arg)
     main_task_id = osThreadGetId();
     // leds
     gpio_init();
+	W25QXX_Init();
+	algo_init();
+	OLED_Init();
+	OLED_ShowString(0, 4, "HS-DAPLink", 24, 1);
+	RES_FS = f_mount(&fs, "", 1);							 //挂载文件系统到W25Q
+	if (RES_FS == FR_OK)									 /* 打开文件夹目录成功，目录信息已经在dir结构体中保存 */
+	{
+		//f_mkfs("", 0, work, sizeof(work));
+//		OLED_ShowString(0, 0, "Fatfs Success..", 12, 1);
+
+	}
+	else if (RES_FS == FR_NO_FILESYSTEM) //如果是新芯片还没有文件系统
+	{
+		OLED_Clear();
+		OLED_ShowString(0, 0, "Fatfs Format..", 12, 1);
+		f_mkfs("", 0, work, sizeof(work));
+		OLED_ShowString(0, 1, "Format Finished", 12, 1);
+
+	}
+	else
+	{
+		OLED_ShowString(0, 0, "Fatfs Failed..", 12, 1);
+
+	}
+	//先读取一次文件到文件列表
+	if (f_opendir(&DirInfo, (const TCHAR *)"0:") == FR_OK) /* 打开文件夹目录成功，目录信息已经在dir结构体中保存 */
+	{
+		f_readdir(&DirInfo, &FileInfo);
+		while (f_readdir(&DirInfo, &FileInfo) == FR_OK) /* 读文件信息到文件状态结构体中 */
+		{
+			if (!FileInfo.fname[0])
+				break;
+			strcpy(Name_Buffer[name_cnt], FileInfo.fname);
+			name_cnt++;
+		}
+	}
     // Turn to LED default settings
     gpio_set_hid_led(hid_led_value);
     gpio_set_cdc_led(cdc_led_value);
@@ -247,11 +310,28 @@ void main_task(void * arg)
     usbd_connect(0);
     usb_state = USB_CONNECTING;
     usb_state_count = USB_CONNECT_DELAY;
-
+	Button_Init();
     // Start timer tasks
-    osTimerId_t tmr_id = osTimerNew(timer_task_30mS, osTimerPeriodic, NULL, NULL);
-    osTimerStart(tmr_id, 3);
+//	osTimerId_t button_id = osTimerNew(button_task_20mS, osTimerPeriodic, NULL, NULL);
+//    osTimerStart(button_id, 2);
+	
+	if(Read_KEY2_Level())
+	{
+		osTimerId_t button_id = osTimerNew(button_task_20mS, osTimerPeriodic, NULL, NULL);
+		osTimerStart(button_id, 1);
+		 while (1)
+		 {
+			Work_State();
+		 }
+	}
+	else
+	{
+		
+		osTimerId_t tmr_id = osTimerNew(timer_task_30mS, osTimerPeriodic, NULL, NULL);
+		osTimerStart(tmr_id, 3);
     while (1) {
+//		button = swd_init_debug();
+		
         flags = osThreadFlagsWait(FLAGS_MAIN_RESET             // Put target in reset state
                        | FLAGS_MAIN_90MS            // 90mS tick
                        | FLAGS_MAIN_30MS            // 30mS tick
@@ -261,7 +341,7 @@ void main_task(void * arg)
                        | FLAGS_MAIN_CDC_EVENT       // cdc event
                        , osFlagsWaitAny
                        , osWaitForever);
-
+//		Work_State();
         if (flags & FLAGS_MAIN_PROC_USB) {
             if (usb_test_mode) {
                 // When in USB test mode Insert a delay to
@@ -269,6 +349,7 @@ void main_task(void * arg)
                 osDelay(1);
             }
             USBD_Handler();
+
         }
 
         if (flags & FLAGS_MAIN_RESET) {
@@ -351,6 +432,7 @@ void main_task(void * arg)
         // 30mS tick used for flashing LED when USB is busy
         if (flags & FLAGS_MAIN_30MS) {
 
+			Button_Process();
             // handle reset button without eventing
             if (!reset_pressed && gpio_get_reset_btn_fwrd()) {
 #ifdef DRAG_N_DROP_SUPPORT
@@ -458,6 +540,7 @@ void main_task(void * arg)
         }
     }
 }
+	}
 
 int main(void)
 {
@@ -468,9 +551,86 @@ int main(void)
 #endif
     // initialize vendor sdk
     sdk_init();
-
+	Show.mode = MODE_SET_OFFLINE;
+	Show.windows = SHOW_OFFLINE;
     osKernelInitialize();                 // Initialize CMSIS-RTOS
     osThreadNew(main_task, NULL, NULL);    // Create application main thread
     osKernelStart();                      // Start thread execution
-    for (;;) {}
+    for (;;) {
+//		Work_State();
+	}
 }
+
+void Work_State(void)
+{
+
+	if (Show.mode != MODE_SET_ONLINE && Show.mode != MODE_SET_TX && Show.mode != MODE_SET_RX)
+		Show_Duty();
+	switch (Show.mode)
+	{
+	case MODE_SET_NORMAL: //首页选择模式
+		Select_Mode();
+		break;
+	case MODE_SET_ONLINE: //有线仿真模式  当正常DAP使用
+
+		break;
+	case MODE_SET_OFFLINE: //脱机烧录模式  自动烧录  选择文件和下载算法
+		Select_Offline();
+		Auto_Fash();
+		break;
+	case MODE_SET_ALGO: //选择烧录算法（也就是目标芯片）
+
+		break;
+	case MODE_SET_FILE: //选择下载文件
+
+		break;
+	case MODE_SET_WIRELESS: //无线模式选择模式
+		Select_WL_MODE();
+		break;
+	case MODE_SET_TX: //无线发射端模式
+		
+		break;
+	case MODE_SET_RX: //无线接收端模式
+		
+		break;
+	default:
+		break;
+	}
+}
+void Show_Duty(void)
+{
+	static uint8_t temp;
+
+	if (Show.windows != temp)
+	{
+		temp = Show.windows;
+		OLED_Clear();
+	}
+	switch (Show.windows)
+	{
+	case SHOW_MENU:
+		Menu_Show();
+		break;
+	case SHOW_FLM:
+		Display_FLM();
+		break;
+	case SHOW_BIN:
+		Display_BIN();
+		break;
+	case SHOW_AUTO:
+
+		break;
+	case SHOW_ONLINE:
+
+		break;
+	case SHOW_OFFLINE:
+		Display_Offline();
+		break;
+	case SHOW_WIRELESS:
+		Display_WL_MODE();
+		break;
+	default:
+		break;
+	}
+}
+

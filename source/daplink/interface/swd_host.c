@@ -775,11 +775,11 @@ static uint8_t swd_read_idcode(uint32_t *id)
     *id = (tmp_out[3] << 24) | (tmp_out[2] << 16) | (tmp_out[1] << 8) | tmp_out[0];
     return 1;
 }
-
+uint32_t tmp = 0;
 
 uint8_t JTAG2SWD()
 {
-    uint32_t tmp = 0;
+    
 
     if (!swd_reset()) {
         return 0;
@@ -808,87 +808,147 @@ uint8_t swd_init_debug(void)
     // init dap state with fake values
     dap_state.select = 0xffffffff;
     dap_state.csw = 0xffffffff;
+	swd_init();
+	// call a target dependant function
+	// this function can do several stuff before really initing the debug
+	//target_before_init_debug();
 
-    int8_t retries = 4;
-    int8_t do_abort = 0;
-    do {
-        if (do_abort) {
-            //do an abort on stale target, then reset the device
-            swd_write_dp(DP_ABORT, DAPABORT);
-            swd_set_target_reset(1);
-            osDelay(2);
-            swd_set_target_reset(0);
-            osDelay(2);
-            do_abort = 0;
-        }
-        swd_init();
-        // call a target dependant function
-        // this function can do several stuff before really
-        // initing the debug
-        if (g_target_family && g_target_family->target_before_init_debug) {
-            g_target_family->target_before_init_debug();
-        }
+	if (!JTAG2SWD())
+	{
+		return 0;
+	}
 
-        if (!JTAG2SWD()) {
-            do_abort = 1;
-            continue;
-        }
+	if (!swd_write_dp(DP_ABORT, STKCMPCLR | STKERRCLR | WDERRCLR | ORUNERRCLR))
+	{
+		return 0;
+	}
 
-        if (!swd_clear_errors()) {
-            do_abort = 1;
-            continue;
-        }
 
-        if (!swd_write_dp(DP_SELECT, 0)) {
-            do_abort = 1;
-            continue;
+	// Ensure CTRL/STAT register selected in DPBANKSEL
+	if (!swd_write_dp(DP_SELECT, 0))
+	{
+		return 0;
+	}
 
-        }
+	// Power up
+	if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ))
+	{
+		return 0;
+	}
 
-        // Power up
-        if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ)) {
-            do_abort = 1;
-            continue;
-        }
+	for (i = 0; i < timeout; i++)
+	{
+		if (!swd_read_dp(DP_CTRL_STAT, &tmp))
+		{
+			return 0;
+		}
 
-        for (i = 0; i < timeout; i++) {
-            if (!swd_read_dp(DP_CTRL_STAT, &tmp)) {
-                do_abort = 1;
-                break;
-            }
-            if ((tmp & (CDBGPWRUPACK | CSYSPWRUPACK)) == (CDBGPWRUPACK | CSYSPWRUPACK)) {
-                // Break from loop if powerup is complete
-                break;
-            }
-        }
-        if ((i == timeout) || (do_abort == 1)) {
-            // Unable to powerup DP
-            do_abort = 1;
-            continue;
-        }
+		if ((tmp & (CDBGPWRUPACK | CSYSPWRUPACK)) == (CDBGPWRUPACK | CSYSPWRUPACK))
+		{
+			// Break from loop if powerup is complete
+			break;
+		}
+	}
 
-        if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ | TRNNORMAL | MASKLANE)) {
-            do_abort = 1;
-            continue;
-        }
+	if (i == timeout)
+	{
+		// Unable to powerup DP
+		return 0;
+	}
 
-        // call a target dependant function:
-        // some target can enter in a lock state
-        // this function can unlock these targets
-        if (g_target_family && g_target_family->target_unlock_sequence) {
-            g_target_family->target_unlock_sequence();
-        }
+	if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ | TRNNORMAL | MASKLANE))
+	{
+		return 0;
+	}
 
-        if (!swd_write_dp(DP_SELECT, 0)) {
-            do_abort = 1;
-            continue;
-        }
+	// call a target dependant function:
+	// some target can enter in a lock state, this function can unlock these targets
+	//target_unlock_sequence();
 
-        return 1;
+	if (!swd_write_dp(DP_SELECT, 0))
+	{
+		return 0;
+	}
+//    int8_t retries = 4;
+//    int8_t do_abort = 0;
+//    do {
+//        if (do_abort) {
+//            //do an abort on stale target, then reset the device
+//            swd_write_dp(DP_ABORT, DAPABORT);
+//            swd_set_target_reset(1);
+//            osDelay(2);
+//            swd_set_target_reset(0);
+//            osDelay(2);
+//            do_abort = 0;
+//        }
+//        swd_init();
+//        // call a target dependant function
+//        // this function can do several stuff before really
+//        // initing the debug
+//        if (g_target_family && g_target_family->target_before_init_debug) {
+//            g_target_family->target_before_init_debug();
+//        }
 
-    } while (--retries > 0);
+//        if (!JTAG2SWD()) {
+//            do_abort = 1;
+//            continue;
+//        }
 
-    return 0;
+//        if (!swd_clear_errors()) {
+//            do_abort = 1;
+//            continue;
+//        }
+
+//        if (!swd_write_dp(DP_SELECT, 0)) {
+//            do_abort = 1;
+//            continue;
+
+//        }
+
+//        // Power up
+//        if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ)) {
+//            do_abort = 1;
+//            continue;
+//        }
+
+//        for (i = 0; i < timeout; i++) {
+//            if (!swd_read_dp(DP_CTRL_STAT, &tmp)) {
+//                do_abort = 1;
+//                break;
+//            }
+//            if ((tmp & (CDBGPWRUPACK | CSYSPWRUPACK)) == (CDBGPWRUPACK | CSYSPWRUPACK)) {
+//                // Break from loop if powerup is complete
+//                break;
+//            }
+//        }
+//        if ((i == timeout) || (do_abort == 1)) {
+//            // Unable to powerup DP
+//            do_abort = 1;
+//            continue;
+//        }
+
+//        if (!swd_write_dp(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ | TRNNORMAL | MASKLANE)) {
+//            do_abort = 1;
+//            continue;
+//        }
+
+//        // call a target dependant function:
+//        // some target can enter in a lock state
+//        // this function can unlock these targets
+//        if (g_target_family && g_target_family->target_unlock_sequence) {
+//            g_target_family->target_unlock_sequence();
+//        }
+
+//        if (!swd_write_dp(DP_SELECT, 0)) {
+//            do_abort = 1;
+//            continue;
+//        }
+
+//        return 1;
+
+//    } while (--retries > 0);
+
+    return 1;
 }
 
 uint8_t swd_set_target_state_hw(target_state_t state)

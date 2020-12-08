@@ -35,7 +35,7 @@
 /* ============================================================================= */
 /** \addtogroup SAM3U_PIO Parallel Input/Output Controller */
 /*@{*/
-
+#include "sam3u2c.h"
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 /** \brief Pio hardware registers */
 typedef struct {

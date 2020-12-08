@@ -38,7 +38,7 @@
  *      USB Device Configuration
  *----------------------------------------------------------------------------*/
 
-#if    (USBD_ENABLE)
+#if    (1)
 
 U8 USBD_AltSetting[USBD_IF_NUM_MAX];
 U8 USBD_EP0Buf[USBD_MAX_PACKET0];

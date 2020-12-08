@@ -38,7 +38,17 @@ extern "C" {
 #define COMPILER_ASSERT(e) enum { COMPILER_CONCAT(compiler_assert_, __COUNTER__) = 1/((e) ? 1 : 0) }
 
 #define __at(_addr) __attribute__ ((at(_addr)))
+#define div_ceil(a, b)      (((a) + (b) - 1) / (b))
+#define false     0
+#define true      1
+#define UNUSED(v)          (void)(v)
 
+/**
+ * \def unused
+ * \brief Marking \a v as a unused parameter or value.
+ */
+#define unused(v)          do { (void)(v); } while(0)
+#  define Assert(expr) ((void) 0)
 #ifdef __cplusplus
 }
 #endif

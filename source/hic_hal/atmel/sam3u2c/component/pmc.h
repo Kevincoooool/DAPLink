@@ -35,7 +35,7 @@
 /* ============================================================================= */
 /** \addtogroup SAM3U_PMC Power Management Controller */
 /*@{*/
-
+#include "sam3u2c.h"
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 /** \brief Pmc hardware registers */
 typedef struct {

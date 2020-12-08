@@ -233,7 +233,9 @@ int main(void)
     gpio_init();
     // init settings
     config_init();
-
+//    SCB->VTOR = 0x00086200; //bootloaders should only have one flash region for interface
+//        // modify stack pointer and start app
+//    modify_stack_pointer_and_start_app((*(uint32_t *)(0x00086200)), (*(uint32_t *)(0x00086200 + 4)));
     // check for invalid app image or rst button press. Should be checksum or CRC but NVIC validation is better than nothing.
     // If the interface has set the hold in bootloader setting don't jump to app
     if (!gpio_get_reset_btn() && g_board_info.target_cfg && validate_bin_nvic((uint8_t *)g_board_info.target_cfg->flash_regions[0].start) && !config_ram_get_initial_hold_in_bl()) {

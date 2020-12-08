@@ -29,7 +29,7 @@
 #include "IO_Config_Override.h"
 #endif
 
-// This GPIO configuration is only valid for the LPC11U35 HIC
+// This GPIO configuration is only valid for the SAM3U2C HIC
 COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 
 // DAP LED
@@ -84,16 +84,20 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 #endif
 
 // TDI Pin - Not used
+// JTAG-TDI
 #ifndef PIN_TDI
-#define PIN_TDI_PORT          PIOA
-#define PIN_TDI_BIT           13
+#define PIN_TDI_PORT          PIOB
+#define PIN_TDI_BIT           16
 #define PIN_TDI               (1UL << PIN_TDI_BIT)
 #endif
 
-// SWO/TDO Pin - Not used
+// JTAG-TDO
 #ifndef PIN_TDO
-#define PIN_TDO_PORT          PIOA
-#define PIN_TDO_BIT           21
+#define PIN_TDO_PORT          PIOB
+#define PIN_TDO_BIT           15
 #define PIN_TDO               (1UL << PIN_TDO_BIT)
 #endif
+
+// SWO/TDO Pin - Not used
+
 #endif
