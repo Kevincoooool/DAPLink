@@ -21,7 +21,6 @@
 
 #include "sam3u.h"
 #include "gpio.h"
-#include "pio.h"
 #include "uart.h"
 #include "compiler.h"
 #include "daplink.h"

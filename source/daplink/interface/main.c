@@ -126,7 +126,6 @@ void timer_task_30mS(void * arg)
 // Timer task, set flags every 30mS and 90mS
 void button_task_20mS(void * arg)
 {
-
 	Button_Process();
 }
 // Functions called from other tasks to trigger events in the main task
@@ -232,6 +231,7 @@ void main_task(void * arg)
     main_task_id = osThreadGetId();
     // leds
     gpio_init();
+	#ifdef OFFLINE
 	W25QXX_Init();
 	algo_init();
 	OLED_Init();
@@ -268,6 +268,8 @@ void main_task(void * arg)
 			name_cnt++;
 		}
 	}
+	Button_Init();
+	#endif
     // Turn to LED default settings
     gpio_set_hid_led(hid_led_value);
     gpio_set_cdc_led(cdc_led_value);
@@ -310,11 +312,10 @@ void main_task(void * arg)
     usbd_connect(0);
     usb_state = USB_CONNECTING;
     usb_state_count = USB_CONNECT_DELAY;
-	Button_Init();
-    // Start timer tasks
-//	osTimerId_t button_id = osTimerNew(button_task_20mS, osTimerPeriodic, NULL, NULL);
-//    osTimerStart(button_id, 2);
 	
+    // Start timer tasks
+
+	#ifdef OFFLINE 
 	if(Read_KEY2_Level())
 	{
 		osTimerId_t button_id = osTimerNew(button_task_20mS, osTimerPeriodic, NULL, NULL);
@@ -326,7 +327,7 @@ void main_task(void * arg)
 	}
 	else
 	{
-		
+	#endif
 		osTimerId_t tmr_id = osTimerNew(timer_task_30mS, osTimerPeriodic, NULL, NULL);
 		osTimerStart(tmr_id, 3);
     while (1) {
@@ -432,7 +433,7 @@ void main_task(void * arg)
         // 30mS tick used for flashing LED when USB is busy
         if (flags & FLAGS_MAIN_30MS) {
 
-			Button_Process();
+//			Button_Process();
             // handle reset button without eventing
             if (!reset_pressed && gpio_get_reset_btn_fwrd()) {
 #ifdef DRAG_N_DROP_SUPPORT
@@ -538,9 +539,11 @@ void main_task(void * arg)
                 gpio_set_cdc_led(cdc_led_value);
             }
         }
+		#ifdef OFFLINE 
     }
+		#endif
 }
-	}
+}
 
 int main(void)
 {

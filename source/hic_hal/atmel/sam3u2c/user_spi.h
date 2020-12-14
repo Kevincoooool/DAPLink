@@ -2,7 +2,7 @@
 #define SPI_H_INCLUDED
 
 #include "compiler.h"
-#include "spi.h"
+#include "sam3u2c.h"
 
 #define MISO_RD()     (PIOA->PIO_PDSR & PIO_PA13)
 #define MOSI_H()      (PIOA->PIO_SODR = PIO_PA14)

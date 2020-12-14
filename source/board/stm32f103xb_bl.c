@@ -1,3 +1,12 @@
+/*
+ * @Descripttion : 
+ * @version      : 
+ * @Author       : Kevincoooool
+ * @Date         : 2020-07-08 20:01:07
+ * @LastEditors  : Kevincoooool
+ * @LastEditTime : 2020-12-14 20:24:59
+ * @FilePath     : \myDAPLink\source\board\stm32f103xb_bl.c
+ */
 /**
  * @file    stm32f103_bl.c
  * @brief   board ID and meta-data for the hardware interface circuit (HIC) based on STM32F103XB
@@ -53,7 +62,7 @@ const board_info_t g_board_info = {
     .info_version = kBoardInfoVersion,
     .board_id = "0000",
     .daplink_url_name =       "HELP_FAQHTM",
-    .daplink_drive_name = 		"MAINTENANCE",
+    .daplink_drive_name = 		"KSDAP_BOOT_F103",
     .daplink_target_url = "https://mbed.com/daplink",
     .target_cfg = &target_device,
 };

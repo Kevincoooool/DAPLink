@@ -1,3 +1,12 @@
+/*
+ * @Descripttion : 
+ * @version      : 
+ * @Author       : Kevincoooool
+ * @Date         : 2020-07-08 20:01:07
+ * @LastEditors  : Kevincoooool
+ * @LastEditTime : 2020-12-14 14:39:18
+ * @FilePath     : \myDAPLink\source\board\sam3u2c_bl.c
+ */
 /**
  * @file    sam3u2c_bl.c
  * @brief   board ID and meta-data for the hardware interface circuit (HIC) based on ATSAM3U
@@ -58,8 +67,8 @@ const target_family_descriptor_t *g_target_family = NULL;
 const board_info_t g_board_info = {
     .info_version = kBoardInfoVersion,
     .board_id = "0000",
-    .daplink_url_name =       "HELP_FAQHTM",
-    .daplink_drive_name =       "MAINTENANCE",
+    .daplink_url_name = "HELP_FAQHTM",
+    .daplink_drive_name = "KSDAP_BOOT",
     .daplink_target_url = "https://mbed.com/daplink",
     .target_cfg = &target_device,
 };

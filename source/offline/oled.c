@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "oledfont.h"
 #include "gpio.h"
-
+#include "cmsis_os2.h"
 //#include "show.h"
 
 uint8_t OLED_GRAM[144][4];

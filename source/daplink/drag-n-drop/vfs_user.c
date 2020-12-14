@@ -43,7 +43,7 @@
 //!
 //! Must be bigger than 4x the flash size of the biggest supported
 //! device.  This is to accomodate for hex file programming.
-#define VFS_DISK_SIZE (MB(16))
+#define VFS_DISK_SIZE (MB(64))
 
 //! @brief Constants for magic action or config files.
 //!
@@ -476,7 +476,8 @@ static uint32_t update_details_txt_file(uint8_t *data, uint32_t datasize)
 
     //Needed by expand_info strlen
     memset(buf, 0, datasize);
-
+	pos += util_write_string(buf + pos, "# 酷世DIY DAPLink https://item.taobao.com/item.htm?&id=610773587113\r\n\r\n");
+	
     pos += util_write_string(buf + pos, "# DAPLink Firmware - see https://mbed.com/daplink\r\n");
     // Unique ID
     pos += util_write_string(buf + pos, "Unique ID: @U\r\n");

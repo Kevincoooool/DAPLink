@@ -8,8 +8,6 @@
  * @FilePath     : \DAPLink\source\hic_hal\atmel\sam3u2c\user_spi.c
  */
 
-#include "spi.h"
-#include "sysclk.h"
 #include "user_spi.h"
 
 void SPI_IO_Init(void)
@@ -43,8 +41,6 @@ uint8_t SPI_W25Q_RW(uint8_t data)
 	
     return r_data;
 }
-
-
 /**
  * @}
  */
