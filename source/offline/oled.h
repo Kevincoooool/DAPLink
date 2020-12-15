@@ -21,7 +21,7 @@
 #define X_WIDTH 	128
 #define Y_WIDTH 	64
 //-----------------OLED端口定义----------------  					   
-
+#ifndef STM32F103xB
 #define OLED_CS_GPIO		PIOB	
 #define OLED_CS_Pin		    PIO_PB17
 
@@ -51,6 +51,39 @@
 
 #define OLED_SCL_H   		OLED_SCL_GPIO ->PIO_SODR = OLED_SCL_Pin  //高电平
 #define OLED_SCL_L   		OLED_SCL_GPIO ->PIO_CODR  = OLED_SCL_Pin  //低电平
+
+#else
+#define OLED_CS_GPIO		GPIOB	
+#define OLED_CS_Pin		    GPIO_PIN_0
+
+#define OLED_DC_GPIO		GPIOB	
+#define OLED_DC_Pin		    GPIO_PIN_1
+
+#define OLED_RST_GPIO		GPIOB	
+#define OLED_RST_Pin		GPIO_PIN_3
+
+#define OLED_SDA_GPIO		GPIOB	
+#define OLED_SDA_Pin		GPIO_PIN_4
+
+#define OLED_SCL_GPIO		GPIOB	
+#define OLED_SCL_Pin		GPIO_PIN_5
+
+#define OLED_CS_H   		OLED_CS_GPIO ->BSRR  = OLED_CS_Pin  //高电平
+#define OLED_CS_L   		OLED_CS_GPIO ->BRR   = OLED_CS_Pin  //低电平
+
+#define OLED_DC_H   		OLED_DC_GPIO ->BSRR  = OLED_DC_Pin  //高电平
+#define OLED_DC_L   		OLED_DC_GPIO ->BRR   = OLED_DC_Pin  //低电平
+
+#define OLED_RST_H   		OLED_RST_GPIO ->BSRR = OLED_RST_Pin  //高电平
+#define OLED_RST_L   		OLED_RST_GPIO ->BRR  = OLED_RST_Pin  //低电平
+
+#define OLED_SDA_H   		OLED_SDA_GPIO ->BSRR = OLED_SDA_Pin  //高电平
+#define OLED_SDA_L   		OLED_SDA_GPIO ->BRR  = OLED_SDA_Pin  //低电平
+
+#define OLED_SCL_H   		OLED_SCL_GPIO ->BSRR = OLED_SCL_Pin  //高电平
+#define OLED_SCL_L   		OLED_SCL_GPIO ->BRR  = OLED_SCL_Pin  //低电平
+
+#endif
 //-----------------OLED端口定义---------------- 
 #define OLED_CS_Clr()   OLED_CS_L    //DC
 #define OLED_CS_Set()   OLED_CS_H    //DC

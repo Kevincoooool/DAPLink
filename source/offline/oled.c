@@ -514,12 +514,23 @@ void OLED_ShowPicture(uint8_t x, uint8_t y, uint8_t sizex, uint8_t sizey, uint8_
 //³õÊ¼»¯SSD1306
 void OLED_Init(void)
 {
+	#ifndef STM32F103xB
 	PIOB->PIO_IDR  =PIOB->PIO_PER  = PIOB->PIO_OER  =  PIO_PB17;
 	PIOB->PIO_IDR  =PIOB->PIO_PER  = PIOB->PIO_OER  =  PIO_PB18;
 	PIOB->PIO_IDR  =PIOB->PIO_PER  = PIOB->PIO_OER  =  PIO_PB19;
 	PIOB->PIO_IDR  =PIOB->PIO_PER  = PIOB->PIO_OER  =  PIO_PB20;
 	PIOB->PIO_IDR  =PIOB->PIO_PER  = PIOB->PIO_OER  =  PIO_PB21;
+#else
+	__HAL_RCC_AFIO_CLK_ENABLE();
+	__HAL_AFIO_REMAP_SWJ_NOJTAG(); //½ûÓÃJTAG
+	GPIO_InitTypeDef GPIO_InitStruct;
 
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5, GPIO_PIN_SET);
+	#endif
 	OLED_RST_Set();
 	osDelay(10);
 	OLED_RST_Clr();

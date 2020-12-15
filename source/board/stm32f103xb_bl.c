@@ -62,7 +62,7 @@ const board_info_t g_board_info = {
     .info_version = kBoardInfoVersion,
     .board_id = "0000",
     .daplink_url_name =       "HELP_FAQHTM",
-    .daplink_drive_name = 		"KSDAP_BOOT_F103",
+    .daplink_drive_name = 		"KSDAP_BOOT",
     .daplink_target_url = "https://mbed.com/daplink",
     .target_cfg = &target_device,
 };

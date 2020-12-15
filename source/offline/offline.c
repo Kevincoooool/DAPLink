@@ -27,7 +27,7 @@ extern FATFS fs; /* Work area (file system object) for logical drives */
 extern FRESULT Res;
 extern UINT br, bw;			 /* File R/W count */
 extern BYTE work[FF_MAX_SS]; /* Work area (larger is better for processing time) */
-uint8_t *rData[1024], Check_Data[1024];
+
 
 uint8_t readflag = 1;
 uint32_t addr = 0;
@@ -46,6 +46,7 @@ uint8_t Need_Next = 0, Burn_cnt = 0;
 
 uint8_t FLASH_SWD(uint8_t *File)
 {
+	uint8_t *rData[1024], Check_Data[1024];
 	Res = f_open(&fnew, (const TCHAR *)File, FA_READ);
 	if (Res == FR_OK)
 	{
@@ -53,16 +54,16 @@ uint8_t FLASH_SWD(uint8_t *File)
 		readflag = 1;
 		if (swd_init_debug())
 		{
-//			if (target_opt_init() == ERROR_SUCCESS)
-//			{
-//				if (target_opt_erase_chip() != ERROR_SUCCESS)
-//				{
-//					return 0;
-//				}
-//			}
-//			else
-//				return 0;
-//			target_opt_uninit();
+			if (target_opt_init() == ERROR_SUCCESS)
+			{
+				if (target_opt_erase_chip() != ERROR_SUCCESS)
+				{
+					return 0;
+				}
+			}
+			else
+				return 0;
+			target_opt_uninit();
 			if (swd_init_debug())
 			{
 				time1 = osKernelGetSysTimerCount();

@@ -37,9 +37,9 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_STM32F103XB);
 #define USB_CONNECT_OFF()            (USB_CONNECT_PORT->BRR  = USB_CONNECT_PIN)
 
 //Connected LED
-#define CONNECTED_LED_PORT           GPIOB
-#define CONNECTED_LED_PIN            GPIO_PIN_6
-#define CONNECTED_LED_PIN_Bit        6
+#define CONNECTED_LED_PORT           GPIOC
+#define CONNECTED_LED_PIN            GPIO_PIN_13
+#define CONNECTED_LED_PIN_Bit        13
 
 //When bootloader, disable the target port(not used)
 #define POWER_EN_PIN_PORT            GPIOB
@@ -48,21 +48,21 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_STM32F103XB);
 
 // nRESET OUT Pin
 #define nRESET_PIN_PORT              GPIOB
-#define nRESET_PIN                   GPIO_PIN_0
-#define nRESET_PIN_Bit               0
+#define nRESET_PIN                   GPIO_PIN_11
+#define nRESET_PIN_Bit               11
 
 //SWD
 #define SWCLK_TCK_PIN_PORT           GPIOB
-#define SWCLK_TCK_PIN                GPIO_PIN_13
-#define SWCLK_TCK_PIN_Bit            13
+#define SWCLK_TCK_PIN                GPIO_PIN_10
+#define SWCLK_TCK_PIN_Bit            10
 
 #define SWDIO_OUT_PIN_PORT           GPIOB
-#define SWDIO_OUT_PIN                GPIO_PIN_14
-#define SWDIO_OUT_PIN_Bit            14
+#define SWDIO_OUT_PIN                GPIO_PIN_9
+#define SWDIO_OUT_PIN_Bit            9
 
 #define SWDIO_IN_PIN_PORT            GPIOB
-#define SWDIO_IN_PIN                 GPIO_PIN_12
-#define SWDIO_IN_PIN_Bit             12
+#define SWDIO_IN_PIN                 GPIO_PIN_9
+#define SWDIO_IN_PIN_Bit             9
 
 //LEDs
 //USB status LED
@@ -75,11 +75,11 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_STM32F103XB);
 #define PIN_HID_LED_Bit              13
 
 #define PIN_CDC_LED_PORT             GPIOC
-#define PIN_CDC_LED                  GPIO_PIN_9
+#define PIN_CDC_LED                  GPIO_PIN_13
 #define PIN_CDC_LED_Bit              13
 
 #define PIN_MSC_LED_PORT             GPIOC
-#define PIN_MSC_LED                  GPIO_PIN_9
+#define PIN_MSC_LED                  GPIO_PIN_13
 #define PIN_MSC_LED_Bit              13
 
 

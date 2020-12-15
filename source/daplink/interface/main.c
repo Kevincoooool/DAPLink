@@ -203,7 +203,7 @@ BYTE work[FF_MAX_SS]; /* Work area (larger is better for processing time) */
 extern uint8_t button_num;
 extern uint8_t dealing_data;
 extern int8_t file_name, name_cnt;
-extern char Name_Buffer[20][20];
+extern char Name_Buffer[10][20];
 uint8_t button = 0;
 void main_task(void * arg)
 {
@@ -231,6 +231,7 @@ void main_task(void * arg)
     main_task_id = osThreadGetId();
     // leds
     gpio_init();
+
 	#ifdef OFFLINE
 	W25QXX_Init();
 	algo_init();
@@ -342,7 +343,6 @@ void main_task(void * arg)
                        | FLAGS_MAIN_CDC_EVENT       // cdc event
                        , osFlagsWaitAny
                        , osWaitForever);
-//		Work_State();
         if (flags & FLAGS_MAIN_PROC_USB) {
             if (usb_test_mode) {
                 // When in USB test mode Insert a delay to
@@ -432,8 +432,6 @@ void main_task(void * arg)
 
         // 30mS tick used for flashing LED when USB is busy
         if (flags & FLAGS_MAIN_30MS) {
-
-//			Button_Process();
             // handle reset button without eventing
             if (!reset_pressed && gpio_get_reset_btn_fwrd()) {
 #ifdef DRAG_N_DROP_SUPPORT

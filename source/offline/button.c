@@ -100,6 +100,7 @@ void Btn3_ContinuosFree_CallBack(void *btn)
 {
 	//   printf("Button2 Á¬°´ÊÍ·Å!");
 }
+#ifndef STM32F103xB
 uint8_t Read_KEY1_Level(void)
 {
 	return (uint8_t)((PIOB->PIO_PDSR & (1<<16))>>16);
@@ -114,15 +115,37 @@ uint8_t Read_KEY3_Level(void)
 {
 	return (uint8_t)((PIOA->PIO_PDSR & (1<<19))>>19);
 }
+#else
+uint8_t Read_KEY1_Level(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6);
+}
+
+uint8_t Read_KEY2_Level(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
+}
+uint8_t Read_KEY3_Level(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
+}
+#endif
 void Button_Init(void)
 {
-
+#ifndef STM32F103xB
 	PIOA->PIO_IER = PIOA->PIO_PER = PIOA->PIO_ODR = PIO_PA19;
 
 	PIOB->PIO_IER = PIOB->PIO_PER = PIOB->PIO_ODR = PIO_PB15;
 	
 	PIOB->PIO_IER = PIOB->PIO_PER = PIOB->PIO_ODR = PIO_PB16;
-
+#else
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	#endif
 	Button_Create("Button1",
 				  &Button1,
 				  Read_KEY1_Level,

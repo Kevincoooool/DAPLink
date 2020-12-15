@@ -41,8 +41,9 @@ extern "C" {
 #define div_ceil(a, b)      (((a) + (b) - 1) / (b))
 #define false     0
 #define true      1
+#ifndef STM32F103xB
 #define UNUSED(v)          (void)(v)
-
+#endif
 /**
  * \def unused
  * \brief Marking \a v as a unused parameter or value.

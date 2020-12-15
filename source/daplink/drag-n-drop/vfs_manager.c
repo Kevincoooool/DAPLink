@@ -324,13 +324,15 @@ void usbd_msc_read_sect(uint32_t sector, uint8_t *buf, uint32_t num_of_sectors)
 
     // indicate msc activity
     main_blink_msc_led(MAIN_LED_FLASH);
-#ifdef DAPLINK_BL 
+#ifdef DAPLINK_BL  
 
    vfs_read(sector, buf, num_of_sectors);
 #endif
+	
 #ifdef ONLINE 
 	vfs_read(sector, buf, num_of_sectors);
-#else
+#endif
+#ifdef OFFLINE 
 	W25QXX_Read( buf, sector*512,num_of_sectors*512);
 #endif
 }
@@ -362,7 +364,8 @@ void usbd_msc_write_sect(uint32_t sector, uint8_t *buf, uint32_t num_of_sectors)
 #endif
 #ifdef ONLINE 
 	vfs_write(sector, buf, num_of_sectors);
-	#else
+#endif
+#ifdef OFFLINE 
 	W25QXX_Write( buf, sector*512,num_of_sectors*512);
 #endif
 
@@ -412,7 +415,8 @@ static void build_filesystem()
 	 vfs_set_file_change_callback(file_change_handler);
     // Set mass storage parameters
     USBD_MSC_MemorySize = vfs_get_total_size();
-#else
+#endif
+#ifdef OFFLINE 
 	USBD_MSC_MemorySize = 16*1024*1024ul;
 #endif
     USBD_MSC_BlockSize  = VFS_SECTOR_SIZE;

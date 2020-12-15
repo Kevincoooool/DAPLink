@@ -8,8 +8,19 @@
  * @FilePath     : \DAPLink\source\hic_hal\atmel\sam3u2c\w25qxx.c
  */
 #include "w25qxx.h"
-
+#ifndef STM32F103xB
 #include "user_spi.h"
+
+
+#else
+#include "bsp_spi.h"
+
+#define SPI_IO_Init  DAP_SPI_Init
+#define SPI_W25Q_RW  SPI_RW_2
+#define CS_L() HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET)
+#define CS_H() HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET)
+
+#endif
 #include "uart.h"
 //////////////////////////////////////////////////////////////////////////////////
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
@@ -33,9 +44,15 @@ uint16_t W25QXX_TYPE = W25Q128; //默认是W25Q128
 
 uint8_t W25QXX_Init(void)
 {
-
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	SPI_IO_Init(); //初始化SPI
-
+	__HAL_RCC_SPI2_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	W25QXX_TYPE = W25QXX_ReadID(); //读取FLASH ID.
 	if (W25QXX_TYPE != 0xff)
 		return 0;
@@ -181,9 +198,10 @@ void W25QXX_Write_NoCheck(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByte
 //pBuffer:数据存储区
 //WriteAddr:开始写入的地址(24bit)
 //NumByteToWrite:要写入的字节数(最大65535)
-uint8_t W25QXX_BUFFER[4096];
+
 void W25QXX_Write(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
+	uint8_t W25QXX_BUFFER[4096];
 	uint32_t secpos;
 	uint16_t secoff;
 	uint16_t secremain;

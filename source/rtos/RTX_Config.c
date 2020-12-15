@@ -101,7 +101,7 @@
 // =============================
 // <i> Enable Round-Robin Task switching.
 #ifndef OS_ROBIN
-#define OS_ROBIN       0
+#define OS_ROBIN       1000
 #endif
 
 //   <o>Round-Robin Timeout [ticks] <1-1000>
