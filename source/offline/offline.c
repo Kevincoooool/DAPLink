@@ -28,7 +28,6 @@ extern FRESULT Res;
 extern UINT br, bw;			 /* File R/W count */
 extern BYTE work[FF_MAX_SS]; /* Work area (larger is better for processing time) */
 
-
 uint8_t readflag = 1;
 uint32_t addr = 0;
 uint32_t i = 0;
@@ -46,7 +45,8 @@ uint8_t Need_Next = 0, Burn_cnt = 0;
 
 uint8_t FLASH_SWD(uint8_t *File)
 {
-	uint8_t *rData[1024], Check_Data[1024];
+	//Check_Data[1024] = {0},
+	static uint8_t  Check_Data[1024] = {0}, rData[1024] = {0};
 	Res = f_open(&fnew, (const TCHAR *)File, FA_READ);
 	if (Res == FR_OK)
 	{
@@ -54,16 +54,16 @@ uint8_t FLASH_SWD(uint8_t *File)
 		readflag = 1;
 		if (swd_init_debug())
 		{
-			if (target_opt_init() == ERROR_SUCCESS)
-			{
-				if (target_opt_erase_chip() != ERROR_SUCCESS)
-				{
-					return 0;
-				}
-			}
-			else
-				return 0;
-			target_opt_uninit();
+//			if (target_opt_init() == ERROR_SUCCESS)
+//			{
+//				if (target_opt_erase_chip() != ERROR_SUCCESS)
+//				{
+//					return 0;
+//				}
+//			}
+//			else
+//				return 0;
+//			target_opt_uninit();
 			if (swd_init_debug())
 			{
 				time1 = osKernelGetSysTimerCount();
@@ -108,16 +108,15 @@ uint8_t FLASH_SWD(uint8_t *File)
 						if (swd_init_debug())
 						{
 							Burn_cnt++;
-							time3 = (time2 - time1) / 1000 + (((time2 - time1) / 10) % 100)/100;
+							time3 = (time2 - time1) / 10000 + (((time2 - time1) / 100) % 100)/100;
 //							OLED_ShowNumber(0, Y0, (time2 - time1) / 1000, 2, 12, 1);
 //							OLED_ShowString(13, Y0, ".", 12, 1);
 //							OLED_ShowNumber(18, Y0, ((time2 - time1) / 10) % 100, 2, 12, 1);
-							OLED_ShowNumber(0, Y0, time3 / 1000, 2, 12, 1);
-							OLED_ShowString(30, Y0, "S", 12, 1);
+//							OLED_ShowNumber(0, Y0, time3 / 1000, 2, 12, 1);
+//							OLED_ShowString(30, Y0, "S", 12, 1);
 							
-
-							OLED_ShowNumber(90, Y0, f_size(&fnew) / time3, 2, 12, 1);
-							OLED_ShowString(105, Y0, "Kb/s", 12, 1);
+//							OLED_ShowNumber(90, Y0, f_size(&fnew) / time3, 2, 12, 1);
+//							OLED_ShowString(105, Y0, "Kb/s", 12, 1);
 
 							swd_set_target_reset(0); //复位运行
 							swd_init_debug();

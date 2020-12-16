@@ -44,8 +44,10 @@ uint16_t W25QXX_TYPE = W25Q128; //默认是W25Q128
 
 uint8_t W25QXX_Init(void)
 {
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
 	SPI_IO_Init(); //初始化SPI
+	#ifdef STM32F103xB
+	GPIO_InitTypeDef GPIO_InitStruct = {0};	
 	__HAL_RCC_SPI2_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	GPIO_InitStruct.Pin = GPIO_PIN_12;
@@ -53,6 +55,7 @@ uint8_t W25QXX_Init(void)
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	#endif
 	W25QXX_TYPE = W25QXX_ReadID(); //读取FLASH ID.
 	if (W25QXX_TYPE != 0xff)
 		return 0;

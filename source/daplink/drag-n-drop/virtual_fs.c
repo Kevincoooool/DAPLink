@@ -89,7 +89,7 @@ typedef struct FatDirectoryEntry {
     uint16_t first_cluster_low_16;
     uint32_t filesize;
 } __attribute__((packed)) FatDirectoryEntry_t;
-//COMPILER_ASSERT(sizeof(FatDirectoryEntry_t) == 32);
+COMPILER_ASSERT(sizeof(FatDirectoryEntry_t) == 32);
 
 // to save RAM all files must be in the first root dir entry (512 bytes)
 //  but 2 actually exist on disc (32 entries) to accomodate hidden OS files,

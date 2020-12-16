@@ -23,19 +23,19 @@
 //-----------------OLED端口定义----------------  					   
 #ifndef STM32F103xB
 #define OLED_CS_GPIO		PIOB	
-#define OLED_CS_Pin		    PIO_PB17
+#define OLED_CS_Pin		    PIO_PB21
 
 #define OLED_DC_GPIO		PIOB	
 #define OLED_DC_Pin		    PIO_PB19
 
 #define OLED_RST_GPIO		PIOB	
-#define OLED_RST_Pin		PIO_PB18
+#define OLED_RST_Pin		PIO_PB20
 
 #define OLED_SDA_GPIO		PIOB	
-#define OLED_SDA_Pin		PIO_PB21
+#define OLED_SDA_Pin		PIO_PB17
 
 #define OLED_SCL_GPIO		PIOB	
-#define OLED_SCL_Pin		PIO_PB20
+#define OLED_SCL_Pin		PIO_PB18
 
 #define OLED_CS_H   		OLED_CS_GPIO->PIO_SODR  = OLED_CS_Pin  //高电平
 #define OLED_CS_L   		OLED_CS_GPIO->PIO_CODR   = OLED_CS_Pin  //低电平

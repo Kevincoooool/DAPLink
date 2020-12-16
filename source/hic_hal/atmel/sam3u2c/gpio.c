@@ -59,7 +59,8 @@ void gpio_init(void)
     do {} while (--Cnt);    // Give pull-up some time to become active
 	
     // Enable port A interrupts in the NVIC
-    NVIC_EnableIRQ(PIOA_IRQn);
+ //   NVIC_EnableIRQ(PIOB_IRQn);
+	NVIC_EnableIRQ(PIOA_IRQn);
 }
 
 void gpio_set_hid_led(gpio_led_state_t state)

@@ -27,17 +27,17 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 
 // DAP LED
 #define PIN_DAP_LED_PORT        PIOB
-#define PIN_DAP_LED_BIT         5
+#define PIN_DAP_LED_BIT         7
 #define PIN_DAP_LED             (1UL << PIN_DAP_LED_BIT)
 
 // MSD LED
 #define PIN_MSD_LED_PORT        PIOB
-#define PIN_MSD_LED_BIT         5
+#define PIN_MSD_LED_BIT         8
 #define PIN_MSD_LED             (1UL << PIN_MSD_LED_BIT)
 
 // CDC LED
 #define PIN_CDC_LED_PORT        PIOB
-#define PIN_CDC_LED_BIT         6
+#define PIN_CDC_LED_BIT         8
 #define PIN_CDC_LED             (1UL << PIN_CDC_LED_BIT)
 
 #endif

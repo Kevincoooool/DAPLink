@@ -34,22 +34,22 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 
 // DAP LED
 #ifndef PIN_DAP_LED
-#define PIN_DAP_LED_PORT        PIOA
-#define PIN_DAP_LED_BIT         29
+#define PIN_DAP_LED_PORT        PIOB
+#define PIN_DAP_LED_BIT         7
 #define PIN_DAP_LED             (1UL << PIN_DAP_LED_BIT)
 #endif
 
 // MSD LED
 #ifndef PIN_MSD_LED
-#define PIN_MSD_LED_PORT        PIOA
-#define PIN_MSD_LED_BIT         28
+#define PIN_MSD_LED_PORT        PIOB
+#define PIN_MSD_LED_BIT         8
 #define PIN_MSD_LED             (1UL << PIN_MSD_LED_BIT)
 #endif
 
 // CDC LED
 #ifndef PIN_CDC_LED
-#define PIN_CDC_LED_PORT        PIOA
-#define PIN_CDC_LED_BIT         31
+#define PIN_CDC_LED_PORT        PIOB
+#define PIN_CDC_LED_BIT         8
 #define PIN_CDC_LED             (1UL << PIN_CDC_LED_BIT)
 #endif
 
@@ -65,7 +65,7 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 // nRESET OUT Pin
 #ifndef PIN_nRESET
 #define PIN_nRESET_PORT         PIOA
-#define PIN_nRESET_BIT          4
+#define PIN_nRESET_BIT          25
 #define PIN_nRESET              (1UL << PIN_nRESET_BIT)
 #endif
 
@@ -86,15 +86,15 @@ COMPILER_ASSERT(DAPLINK_HIC_ID == DAPLINK_HIC_ID_SAM3U2C);
 // TDI Pin - Not used
 // JTAG-TDI
 #ifndef PIN_TDI
-#define PIN_TDI_PORT          PIOB
-#define PIN_TDI_BIT           16
+#define PIN_TDI_PORT          PIOA
+#define PIN_TDI_BIT           20
 #define PIN_TDI               (1UL << PIN_TDI_BIT)
 #endif
 
 // JTAG-TDO
 #ifndef PIN_TDO
-#define PIN_TDO_PORT          PIOB
-#define PIN_TDO_BIT           15
+#define PIN_TDO_PORT          PIOA
+#define PIN_TDO_BIT           21
 #define PIN_TDO               (1UL << PIN_TDO_BIT)
 #endif
 
